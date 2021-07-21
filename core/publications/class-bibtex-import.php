@@ -43,6 +43,13 @@ class TP_Bibtex_Import {
         // print_r($undefinedStrings);
         // print_r($entries);
         for ( $i = 0; $i < $max; $i++ ) {
+            
+            // SHAHAB: skip informal publications with archivePrefix = {arXiv} as characteristics
+            if (array_key_exists('archiveprefix', $entries[$i]) === true && ( $entries[$i]['archiveprefix'] == 'arXiv' || $entries[$i]['archiveprefix'] == 'arxiv')) {
+                unset($entries[$i]);
+                continue;
+            }
+
             $entries[$i]['name'] = array_key_exists('name', $entries[$i]) === true ? $entries[$i]['name'] : '';
             $entries[$i]['date'] = array_key_exists('date', $entries[$i]) === true ? $entries[$i]['date'] : '';
             $entries[$i]['location'] = array_key_exists('location', $entries[$i]) === true ? $entries[$i]['location'] : '';
@@ -81,7 +88,14 @@ class TP_Bibtex_Import {
                 $entries[$i]['author'] = tp_bibtex_import_author::init($entries[$i], 'author', $settings['author_format']);
             }
             if ( array_key_exists('editor', $entries[$i]) ) { 
-                $entries[$i]['editor'] = tp_bibtex_import_author::init($entries[$i], 'editor', $settings['author_format']);
+                // SHAHAB 1: exclude editors for publications with defined types in my-pub-config.php
+                if ( in_array($entries[$i]['bibtexEntryType'], PUB_TYPES_EXCLUDE_EDITORS ) ) {
+                    //Shahab: empty editors for these types
+                    $entries[$i]['editor'] = '';
+                } else {
+                    // Shahab 2: as per issue all editors are excluded
+                    $entries[$i]['editor'] = tp_bibtex_import_author::init($entries[$i], 'editor', $settings['author_format']);
+                }
             }
             
             // for isbn/issn detection
@@ -107,7 +121,8 @@ class TP_Bibtex_Import {
             
             // replace bibtex chars
             foreach ($entries[$i] as $key => $value) {
-                if ( $key == 'author' || $key == 'editor' ) {
+                // Shahab: check if editor is not empty &&value!=empty
+                if ( $key == 'author' || ($key == 'editor' && $value != '' ) ) {
                     // replace only a list of special chars and not all {} blocks
                     $entries[$i][$key] = TP_Bibtex::clean_author_names($value);
                     continue;
@@ -119,11 +134,27 @@ class TP_Bibtex_Import {
             if ( $tags != '' ) {
                 $tags = str_replace (array("\r\n", "\n", "\r"), ' ', $tags);
             }
+
+            // Shahab: deduplicate URL & DOI
+            if ( array_key_exists('doi', $entries[$i]) ) {
+                if ( array_key_exists('url', $entries[$i]) ) {
+                    $entries[$i]['url'] = str_replace('https://doi.org/' . $entries[$i]['doi'], '', $entries[$i]['url']);
+                }
+            }
             
             // Add the string to database
             if ( $test === false ) {
                 $entries[$i]['entry_id'] = self::import_publication_to_database($entries[$i], $tags, $settings);
             }
+            
+            //Shahab: in test mode: to see the results after processing without being written to db
+            /* if ($test == true) {
+				echo $i+1 . ": ";
+				foreach ($entries[$i] as $key => $value) {
+					echo $key . ": " . $value . "<br>";
+				}
+				echo "<br><br>";
+			} */
         }
         return $entries;
 
@@ -138,7 +169,7 @@ class TP_Bibtex_Import {
      * @since 5.0.0
      * @access private
      */
-    protected static function import_publication_to_database ($entry, $tags, $settings) {
+    private static function import_publication_to_database ($entry, $tags, $settings) {
         $check = true;
         if ( $settings['overwrite'] === true ) {
             $entry['entry_id'] = TP_Publications::change_publication_by_key($entry['bibtex'], $entry, $tags);
@@ -173,7 +204,7 @@ class TP_Bibtex_Import {
      * @since 5.0.0
      * @acces private
      */
-    protected static function set_date_of_publishing ($entry) {
+    private static function set_date_of_publishing ($entry) {
         $entry['month'] = array_key_exists('month', $entry) === true ? self::parse_month($entry['month']) : '';
         $entry['day'] = array_key_exists('day', $entry) === true ? $entry['day'] : '';
         // if complete date is given

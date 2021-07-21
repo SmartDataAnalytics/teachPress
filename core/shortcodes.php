@@ -481,7 +481,7 @@ class TP_Shortcodes {
           // define url
           $link_url .= 'yr=' . $filter_parameter['year'] . '&amp;type=' . $filter_parameter['type'] . '&amp;usr=' . $filter_parameter['user'] . '&amp;auth=' . $filter_parameter['author'] . $settings['html_anchor'];
 
-          $tags .= '<span style="font-size:' . $size . 'px;"><a rel="nofollow" href="' . $link_url . '" title="' . $link_title . '" class="' . $link_class . '">' . stripslashes($tagcloud['name']) . '</a></span> ';
+          $tags .= '<span style="font-size:' . $size . 'px;"><a rel="nofollow" href="' . $link_url . '" title="' . $link_title . '" class="' . $link_class . '">' . stripslashes($tagcloud['name']) . '</a></span> <br> ';
        }
        return $tags;
     }
@@ -1222,7 +1222,7 @@ function tp_links_shortcode ($atts) {
  *      @type int $show_altmetric_donut     0 (false) or 1 (true), default: 0
  *      @type int $show_altmetric_entrx     0 (false) or 1 (true), default: 0
  *      @type int $use_jumpmenu             Use filter as jumpmenu (1) or not (0), default: 1
- *      @type int $use_as_filter            Show all entries by default (1) o not (0), default 1
+ *      @type int $use_as_filter            Show all entries by default (1) or not (0), default 1
  * }
  * @return string
  * @since 7.0.0
@@ -1234,6 +1234,8 @@ function tp_publist_shortcode ($atts) {
         'type'                  => '',
         'author'                => '',
         'year'                  => '',
+        'meta_key'              => '', // @Shahab: added meta_key as array of metadata
+        'meta_value'            => '', // @Shahab: added meta_value as array of value for meta_key
         'exclude'               => '',
         'include'               => '',
         'include_editor_as_author' => 1,
@@ -1261,7 +1263,9 @@ function tp_publist_shortcode ($atts) {
         'pagination'            => 1,
         'entries_per_page'      => 50,
         'sort_list'             => '',
+        'show_with_tags'        => 0,  // @Shahab: added show_with_tags as new setting -> independent from tpcloud for tags to be displayed for every publication in list
         'show_tags_as'          => 'cloud',
+        'show_pub_tag_link_as'  => 'filter',  // @Shahab: added new setting to control how tags link of a publication is displayed: as "filter" (permalink) or a link to "research_area"    
         'show_author_filter'    => 1,
         'show_in_author_filter' => '',
         'show_type_filter'      => 1,
@@ -1302,7 +1306,8 @@ function tp_publist_shortcode ($atts) {
         'show_year_filter'      => ( $atts['show_year_filter'] == '1' ) ? true : false,
         'show_search_filter'    => ( $atts['show_search_filter'] == '1' ) ? true : false,
         'show_bibtex'           => ( $atts['show_bibtex'] == '1' ) ? true : false,
-        'with_tags'             => ( $atts['show_tags_as'] == 'none' ) ? 0 : 1,
+        'with_tags'             => htmlspecialchars($atts['show_with_tags']),  // @Shahab: changed this setting to its own settings from atts and independent from show_tags_as | tpcloud
+        'show_pub_tag_link_as'  => htmlspecialchars($atts['show_pub_tag_link_as']),  // @Shahab: added new setting to control how tags link of a publication is displayed: as Filter (permalink) or a link to Research Area
         'container_suffix'      => htmlspecialchars($atts['container_suffix']),
         'filter_class'          => htmlspecialchars($atts['filter_class']),
         'show_altmetric_entry'  => ($atts['show_altmetric_entry'] == '1') ? true : false,
@@ -1347,6 +1352,8 @@ function tp_publist_shortcode ($atts) {
         'author'        => ( $filter_parameter['author'] !== '' ) ? $filter_parameter['author'] : htmlspecialchars($atts['author']),
         'year'          => ( $filter_parameter['year'] !== '' ) ? $filter_parameter['year'] : htmlspecialchars($atts['year']),
         'tag'           => ( $filter_parameter['tag'] !== '' ) ? $filter_parameter['tag'] : htmlspecialchars($atts['tag']),
+        'meta_key'      => htmlspecialchars($atts['meta_key']), // @Shahab: Added meta_key as sql parameter
+        'meta_value'    => htmlspecialchars($atts['meta_value']), //@Shahab: added meta_value as sql param
         'exclude'       => htmlspecialchars($atts['exclude']),
         'exclude_tags'  => htmlspecialchars($atts['exclude_tags']),
         'exclude_types' => htmlspecialchars($atts['exclude_types']),
@@ -1381,7 +1388,7 @@ function tp_publist_shortcode ($atts) {
             $searchbox .= '<input type="hidden" name="p" id="page_id" value="' . get_the_id() . '"/>';
         }
 
-        $searchbox .= '<input name="tsr" id="tp_search_input_field" type="search" placeholder="' . __('Enter search word','teachpress') .'" value="' . stripslashes($filter_parameter['search']) . '" tabindex="1"/>';
+        $searchbox .= '<input name="tsr" id="tp_search_input_field" type="search" placeholder="' . __('Enter search term','teachpress') .'" value="' . stripslashes($filter_parameter['search']) . '" tabindex="1"/>';
         $searchbox .= '<input name="tps_button" class="tp_search_button" type="submit" tabindex="7" value="' . __('Search', 'teachpress') . '"/>';
 
     }
@@ -1426,7 +1433,7 @@ function tp_publist_shortcode ($atts) {
          ( $filter_parameter['user'] == '' || $filter_parameter['user'] == $atts['user'] ) && 
          ( $filter_parameter['author'] == '' || $filter_parameter['author'] == $atts['author'] ) && 
          ( $filter_parameter['tag'] == '' || $filter_parameter['tag'] == $atts['tag'] ) && 
-           $filter_parameter['search'] == '' 
+           $filter_parameter['search'] == ''
         ) {
         $showall = '';
     }
@@ -1455,11 +1462,11 @@ function tp_publist_shortcode ($atts) {
     
     // filter
     if ( $filter !== '' ) {
-        $part1 .= '<div class="teachpress_filter">' . $filter . '</div>';
+        $part1 .= '<div class="teachpress_filter">' . '<br> Filter by<br>' . $filter . '</div>'; //Shahab: added '<br>filter by<br>'
     }
     
     // show all button
-    if ( $showall !== '' ) {
+    if ( $showall !== '' && $cloud_settings['show_tags_as'] != 'none') {
         $part1 .= '<p style="text-align:center">' . $showall . '</p>';
     }
     
@@ -1491,7 +1498,9 @@ function tp_publist_shortcode ($atts) {
     $args = array(
         'tag'                       => $sql_parameter['tag'], 
         'year'                      => $sql_parameter['year'], 
-        'type'                      => $sql_parameter['type'], 
+        'type'                      => $sql_parameter['type'],
+        'meta_key'                  => $sql_parameter['meta_key'], //@Shahab: added meta_key to args for query pubs
+        'meta_value'                => $sql_parameter['meta_value'], //@Shahab: added meta_value to args for query pubs
         'user'                      => $sql_parameter['user'], 
         'search'                    => $filter_parameter['search'],
         'author_id'                 => $sql_parameter['author'],
@@ -1581,7 +1590,7 @@ function tp_publist_shortcode ($atts) {
     }
     // If there are no publications founded
     else {
-        $part2 = '<div class="teachpress_message_error"><p>' . __('Sorry, no publications matched your criteria.','teachpress') . '</p></div>';
+        $part2 = '<div class="teachpress_message_error"><p>' . __('No publications were found.','teachpress') . '</p></div>';
     }
     
     // For debugging only:
@@ -1615,6 +1624,8 @@ function tp_cloud_shortcode($atts) {
         'type'                      => '',
         'author'                    => '',
         'year'                      => '',
+        'meta_key'                  => '', // @Shahab: added meta_key as array of metadata
+        'meta_value'                => '', // @Shahab: added meta_value as array of value for meta_key
         'exclude'                   => '', 
         'include'                   => '',
         'include_editor_as_author'  => 1,
@@ -1642,6 +1653,8 @@ function tp_cloud_shortcode($atts) {
         'pagination'                => 1,
         'entries_per_page'          => 50,
         'sort_list'                 => '',
+        'show_with_tags'            => 1, // Shahab: added show_with_tags as new setting
+        'show_pub_tag_link_as'      => 'filter',  // Shahab: added new setting to control how tags link of a publication is displayed: as Filter (permalink) or a link to Research Area
         'show_tags_as'              => 'cloud',
         'show_author_filter'        => 1,
         'show_in_author_filter'     => '',
@@ -1677,6 +1690,8 @@ function tp_list_shortcode($atts){
        'type'                       => '',
        'author'                     => '',
        'year'                       => '',
+       'meta_key'                   => '', // @Shahab: added meta_key as array of metadata
+       'meta_value'                 => '', // @Shahab: added meta_value as array of value for meta_key
        'exclude'                    => '',
        'include'                    => '',
        'include_editor_as_author'   => 1,
@@ -1706,7 +1721,9 @@ function tp_list_shortcode($atts){
        'show_in_author_filter'      => '',
        'show_search_filter'         => 0,
        'show_user_filter'           => 0, 
-       'show_year_filter'           => 0, 
+       'show_year_filter'           => 0,
+       'show_with_tags'             => 0, // @Shahab: added show_with_tags as new setting
+       'show_pub_tag_link_as'       => 'filter',  // @Shahab: added new setting to control how tags link of a publication is displayed: as Filter (permalink) or a link to Research Area
        'show_tags_as'               => 'none',
        'container_suffix'           => '',
        'show_altmetric_donut'       => 0,
@@ -1734,6 +1751,8 @@ function tp_search_shortcode ($atts) {
        'type'                       => '',
        'author'                     => '',
        'year'                       => '',
+       'meta_key'                   => '', // @Shahab: added meta_key as array of metadata
+       'meta_value'                 => '', // @Shahab: added meta_value as array of value for meta_key
        'exclude'                    => '',
        'include'                    => '',
        'include_editor_as_author'   => 1,
@@ -1758,6 +1777,8 @@ function tp_search_shortcode ($atts) {
        'entries_per_page'           => 20,
        'sort_list'                  => '',
        'show_bibtex'                => 1,
+       'show_with_tags'             => 0, // @Shahab: added show_with_tags as new setting
+       'show_pub_tag_link_as'       => 'filter',  // @Shahab: added new setting to control how tags link of a publication is displayed: as Filter (permalink) or a link to Research Area
        'show_tags_as'               => 'none',
        'show_author_filter'         => 0,
        'show_in_author_filter'      => '',

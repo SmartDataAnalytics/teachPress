@@ -44,10 +44,13 @@ function tp_page_menu ($atts) {
     $entry_limit = intval($atts['entry_limit']);
     $limit_name = 'limit' . $atts['container_suffix'];
     
+
+    // @shahab: disabled below: we want to show number of entries
+
     // If we can show all entries on a page, do nothing
-    if ( $number_entries <= $entries_per_page ) {
+   /*  if ( $number_entries <= $entries_per_page ) {
         return;
-    }
+    } */
 
     $page_link = $atts['page_link'] . $limit_name;
     $num_pages = floor (($number_entries / $entries_per_page));
@@ -80,7 +83,6 @@ function tp_page_menu ($atts) {
     if ($atts['mode'] === 'top') {
         return $atts['before'] . '<div class="' . $atts['class'] . '">' . $entries . $back_links . $page_input . $next_links . '</div>' . $atts['after'];
     }
-    
     return $atts['before'] . '<div class="' . $atts['class'] . '">' . $entries . $back_links . $current_page . ' ' . __('of','teachpress') . ' ' . $num_pages . ' ' . $next_links . '</div>' . $atts['after'];
 
 }
@@ -311,41 +313,6 @@ function tp_convert_file_size ($bytes) {
         return $bytes . ' byte';
     }
     return '0 bytes';
-}
-
-/**
- * Converts an array in a comma separated string
- * @param array|string $input
- * @param string $type  The type of the elements: string, int, float
- * @return string
- * @since 8.0.0
- */
-function tp_convert_array_to_string($input, $type = 'string') {
-    if (is_array($input) ) {
-        $array = $input;
-    }
-    else {
-        $array[] = $input;
-    }
-
-    $max = count( $array );
-    $string = '';
-    
-    for( $i = 0; $i < $max; $i++ ) {
-        // Prepare element
-        switch ( $type ) :
-            case 'int':
-                $element = intval($array[$i]);
-                break;
-            case 'float':
-                $element = floatval($array[$i]);
-                break;
-            default:
-                $element = htmlspecialchars($array[$i]);
-        endswitch;
-        $string = ($string === '') ? $element : $string . ',' .$element;
-    }
-    return $string;
 }
 
 /**

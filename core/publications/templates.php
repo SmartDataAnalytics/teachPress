@@ -395,6 +395,8 @@ class TP_HTML_Publication_Template {
     public static function get_single ($row, $all_tags, $settings, $template, $template_settings, $pub_count = 0) {
         $container_id = ( $settings['container_suffix'] != '' ) ? $row['pub_id'] . '_' . $settings['container_suffix'] : $row['pub_id'];
         $separator = $template_settings['button_separator'];
+        $menu_label_tags = $settings['show_pub_tag_link_as'] ?? $template_settings['menu_label_tags']; //@shahab: added menu_label_tags to overwrite it with a custom tag link
+        if (!strrpos($menu_label_tags, ':')) { $menu_label_tags .= ': '; }
         $name = self::prepare_publication_title($row, $settings, $container_id);
         $images = self::handle_images($row, $settings, $template);
         $abstract = '';
@@ -412,7 +414,11 @@ class TP_HTML_Publication_Template {
         if ( $settings['with_tags'] == 1 ) {
             $generated = self::get_tags($row, $all_tags, $settings);
             $keywords = $generated['keywords'];
-            $tag_string = '<span class="tp_pub_tags_label">' . $template_settings['menu_label_tags'] . '</span>' . $generated['tags'];
+            // @shahab: if there is no tags, skip showing tags label, else show it with a relevant label: by default "Tags" for filtering or set it to the value from shortcode for custom link
+            if ($generated['tags'] != '') {
+                $tag_string = '<span class="tp_pub_tags_label">' . $menu_label_tags . '</span>' . $generated['tags'];
+            }
+            
         }
         
         // parse author names for teachPress style
@@ -556,7 +562,7 @@ class TP_HTML_Publication_Template {
         }
         
         // special cases for article/incollection/inbook/inproceedings
-        $in = ( $use_span === true ) ? '<span class="tp_pub_additional_in">' . $settings['meta_label_in'] . '</span>' : $settings['meta_label_in'];
+        $in = '<span class="tp_pub_additional_in">' . $settings['meta_label_in'] . '</span>';
         
         // end formator
         $type = $tp_publication_types->get_data($row['type']);
@@ -829,7 +835,16 @@ class TP_HTML_Publication_Template {
         foreach ($all_tags as $tag) {
             if ($tag["pub_id"] == $row['pub_id']) {
                 $keywords[] = array('name' => stripslashes($tag["name"]));
-                $tag_string .= '<a rel="nofollow" href="' . $settings['permalink'] . 'tgid=' . $tag["tag_id"] . $settings['html_anchor'] . '" title="' . __('Show all publications which have a relationship to this tag','teachpress') . '">' . stripslashes($tag["name"]) . '</a>, ';
+                // @Shahab: add if elseif to check how the tag link works: as a link to research area or a filter - using its setting passed with shortcode (default is filter)
+                if ($settings['show_pub_tag_link_as'] == 'filter') {
+                    $tag_string .= '<a rel="nofollow" href="' . $settings['permalink'] . 'tgid=' . $tag["tag_id"] . $settings['html_anchor'] . '" title="' . __('Show all publications related to this tag','teachpress') . '">' . stripslashes($tag["name"]) . '</a>, ';
+                } else {
+                    // @Shahab: get post link with the title of the tag and set it to the link
+                    global $wpdb;
+                    $post_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . stripslashes($tag["name"]) . "'" ); 
+                    $post_url = get_permalink($post_id);
+                    $tag_string .= '<a rel="nofollow" href="' . $post_url . '" title="' . __('Read more about ','teachpress') . stripslashes($tag["name"]) . '">' . stripslashes($tag["name"]) . '</a>, ';
+                }                
             }
         }
         return array('tags' => substr($tag_string, 0, -2),

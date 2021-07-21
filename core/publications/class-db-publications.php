@@ -64,7 +64,7 @@ class TP_Publications {
      *
      * @since 5.0.0
      * @param array $args
-     * @param boolean $count    set to true of you only need the number of rows
+     * @param boolean $count    set to true if you only need the number of rows
      * @return mixed            array, object or int
     */
     public static function get_publications($args = array(), $count = false) {
@@ -85,24 +85,38 @@ class TP_Publications {
             'order'                     => 'date DESC',
             'limit'                     => '',
             'search'                    => '',
+            'meta_key'                  => '', // @Shahab: added meta_key as array of metadata
+            'meta_value'                => '', // @Shahab: added meta_value as array of value for meta_key
             'output_type'               => OBJECT
         );
         $atts = wp_parse_args( $args, $defaults );
         global $wpdb;
-        
+
         // define all things for meta data integration
         $joins = '';
         $selects = '';
         $meta_fields = $wpdb->get_results("SELECT variable FROM " . TEACHPRESS_SETTINGS . " WHERE category = 'teachpress_pub'", ARRAY_A);
         if ( !empty($meta_fields) ) {
             $i = 1;
+            $meta_having = ''; //@Shahab: this will keep having conditions for querying based on metadata 
             foreach ($meta_fields as $field) {
                 $table_id = 'm' . $i; 
                 $selects .= ', ' . $table_id .'.meta_value AS ' . $field['variable'];
                 $joins .= ' LEFT JOIN ' . TEACHPRESS_PUB_META . ' ' . $table_id . " ON ( " . $table_id . ".pub_id = p.pub_id AND " . $table_id . ".meta_key = '" . $field['variable'] . "' ) ";
+
+                //@Shahab: make HAVING for metadata if meta_key & meta_value passed
+                $meta_keys = explode(',', $atts['meta_key']);
+                $meta_values = explode(',', $atts['meta_value']);
+                $meta_data = array_combine($meta_keys, $meta_values);
+                if (array_key_exists($field['variable'], $meta_data)) {
+                    $meta_having .= ($meta_having == '') ? '' : 'OR ';
+                    $meta_having .= $field['variable'] . "='" . $meta_data[$field['variable']] . "' ";
+                }
+                //@Shahab: end make HAVING
+
                 $i++;
             }
-        }
+        }        
 
         // define basics
         $select = "SELECT DISTINCT p.pub_id, p.title, p.type, p.bibtex, p.author, p.editor, p.date, DATE_FORMAT(p.date, '%Y') AS year, p.urldate, p.isbn, p.url, p.booktitle, p.issuetitle, p.journal, p.volume, p.number, p.pages, p.publisher, p.address, p.edition, p.chapter, p.institution, p.organization, p.school, p.series, p.crossref, p.abstract, p.howpublished, p.key, p.techtype, p.note, p.is_isbn, p.image_url, p.image_target, p.image_ext, p.doi, p.rel_page, p.status, p.added, p.modified, p.import_id $selects FROM " . TEACHPRESS_PUB . " p $joins ";
@@ -176,7 +190,12 @@ class TP_Publications {
         if ( $atts['year'] != '' && $atts['year'] !== '0' ) {
             $having = ' HAVING ' . TP_DB_Helpers::generate_where_clause($atts['year'], "year", "OR", "=");
         }
-        
+
+        //@Shahab: add meta_having conditions to the main having if any
+        if ($meta_having != '') {
+            $having .= ($having == '') ? ' HAVING ' . $meta_having : ' AND ' . $meta_having;
+        }
+
         // LIMIT clause
         $limit = ( $atts['limit'] != '' ) ? 'LIMIT ' . esc_sql($atts['limit']) : '';
 
@@ -195,7 +214,7 @@ class TP_Publications {
     }
     
     /**
-     * Returns course meta data
+     * Returns publications meta data
      * @param int $pub_id           The publication ID
      * @param string $meta_key      The name of the meta field
      * @return array
@@ -550,14 +569,32 @@ class TP_Publications {
         $search_pub = self::get_publication_by_key($key, ARRAY_A);
         if ( $search_pub === NULL ) {
             return false;
+        } //--- Shahab Added ---// 
+        else {
+            // publication already exists, no need to update. break from here!
+            return $search_pub['pub_id']; 
         }
         
         // Update publication
         $data = wp_parse_args( $input_data, $search_pub );
+
+
+        // ---- SHAHAB ADDED ---- 
+		/* --- this is not needed anymore - to prevent updating current publications this func returns if it founds a publication */
+        // prevent from deleting current URLs, (add if new: does not work properly yet!)
+        /* if ( $search_pub['url'] != '' ) {
+            echo $data['url'] = $search_pub['url'];
+            if ( !strpos($search_pub['url'], $input_data['url'] ) ) {
+                $data['url'] .= ' ' . $input_data['url'];
+            }
+        } */
+
         self::change_publication($search_pub['pub_id'], $data, '', '', '');
         
-        // Delete existing tags
-        $wpdb->query( "DELETE FROM " . TEACHPRESS_RELATION . " WHERE `pub_id` = " . $search_pub['pub_id'] );
+        
+        // ---- SHAHAB EDITED ---- //
+        // Delete existing tags -No! then commented because we need tags!
+        //$wpdb->query( "DELETE FROM " . TEACHPRESS_RELATION . " WHERE `pub_id` = " . $search_pub['pub_id'] );
         
         // Add new tags
         if ( $tags != '' ) {

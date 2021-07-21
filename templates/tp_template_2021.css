@@ -4,6 +4,29 @@
  * Author: Michael Winkler
 */
 /* publication box */
+
+.fa-globe {
+color: #0A5C51 !important;
+padding-right: 5px;
+font-size: 12pt;
+}
+
+.ai-doi{
+color: #0A5C51;
+padding-right: 5px;
+font-size: 13.5pt !important;
+}
+
+.ai-arxiv{
+color: #0A5C51;
+padding-right: 5px;
+font-size: 13.5pt !important;
+}
+.fa-file-pdf{
+color: #0A5C51;
+padding-right: 5px;
+font-size: 13.5pt !important;
+}
 div.tp_publication {
     display: flex;
     justify-content: space-between;
@@ -24,6 +47,7 @@ div.tp_pub_number {
     padding-top: 8px;
     flex-shrink: 0;}
 @media (max-width: 767.98px) {
+
     div.tp_publication {
         flex-flow: column; }
     div.tp_pub_image_left, div.tp_pub_image_right {
@@ -40,7 +64,10 @@ div.tp_pub_number {
 .tp_pub_author, #content p.tp_pub_author {
     font-size:0.9rem; 
     margin-bottom:1px; 
-    margin-top:1px;}
+    margin-top:1px;
+	color:#549F97 !important;
+	
+	}
 .tp_pub_title, #content p.tp_pub_title {
     font-size:0.9rem; 
     font-weight:bold; 
@@ -63,7 +90,7 @@ div.tp_pub_number {
     color:#AAAAAA; 
     text-decoration:none;}
 .tp_pub_type {
-    background-color: #008bd2; 
+    background-color: #0a5c51; 
     color: #fff; 
     display: inline-block; 
     padding: 5px 5px; 
