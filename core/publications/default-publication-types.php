@@ -249,8 +249,8 @@ function tp_register_all_publication_types() {
         array(
             'type_slug'         => 'unpublished',
             'bibtex_key_ext'    => 'unpublished',
-            'i18n_singular'     => __('Unpublished','teachpress'),
-            'i18n_plural'       => __('Unpublished','teachpress'),
+            'i18n_singular'     => __('Informal Publications','teachpress'), // Shahab: rename unpublished to informal publications
+            'i18n_plural'       => __('Informal Publications','teachpress'),
             'default_fields'    => array('howpublished'), 
             'html_meta_row'     => '{howpublished}{year}{isbn}{note}' 
         ) );
