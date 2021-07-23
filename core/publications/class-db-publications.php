@@ -85,8 +85,6 @@ class TP_Publications {
             'order'                     => 'date DESC',
             'limit'                     => '',
             'search'                    => '',
-            'meta_key'                  => '', // @Shahab: added meta_key parsed as array of metadata
-            'meta_value'                => '', // @Shahab: added meta_value parsed as array of value for meta_key
             'meta_key_search'           => array(), //@SHAHAB: new meta_key_search as array of (meta_key => meta_value) pair that's initialized in shortcode builder sql_parameter & args for getting list of pubs
             'output_type'               => OBJECT
         );
