@@ -85,8 +85,9 @@ class TP_Publications {
             'order'                     => 'date DESC',
             'limit'                     => '',
             'search'                    => '',
-            'meta_key'                  => '', // @Shahab: added meta_key as array of metadata
-            'meta_value'                => '', // @Shahab: added meta_value as array of value for meta_key
+            'meta_key'                  => '', // @Shahab: added meta_key parsed as array of metadata
+            'meta_value'                => '', // @Shahab: added meta_value parsed as array of value for meta_key
+            'meta_key_search'           => array(), //@SHAHAB: new meta_key_search as array of (meta_key => meta_value) pair that's initialized in shortcode builder sql_parameter & args for getting list of pubs
             'output_type'               => OBJECT
         );
         $atts = wp_parse_args( $args, $defaults );
@@ -98,25 +99,13 @@ class TP_Publications {
         $meta_fields = $wpdb->get_results("SELECT variable FROM " . TEACHPRESS_SETTINGS . " WHERE category = 'teachpress_pub'", ARRAY_A);
         if ( !empty($meta_fields) ) {
             $i = 1;
-            $meta_having = ''; //@Shahab: this will keep having conditions for querying based on metadata 
             foreach ($meta_fields as $field) {
                 $table_id = 'm' . $i; 
                 $selects .= ', ' . $table_id .'.meta_value AS ' . $field['variable'];
                 $joins .= ' LEFT JOIN ' . TEACHPRESS_PUB_META . ' ' . $table_id . " ON ( " . $table_id . ".pub_id = p.pub_id AND " . $table_id . ".meta_key = '" . $field['variable'] . "' ) ";
-
-                //@Shahab: make HAVING for metadata if meta_key & meta_value passed
-                $meta_keys = explode(',', $atts['meta_key']);
-                $meta_values = explode(',', $atts['meta_value']);
-                $meta_data = array_combine($meta_keys, $meta_values);
-                if (array_key_exists($field['variable'], $meta_data)) {
-                    $meta_having .= ($meta_having == '') ? '' : 'OR ';
-                    $meta_having .= $field['variable'] . "='" . $meta_data[$field['variable']] . "' ";
-                }
-                //@Shahab: end make HAVING
-
                 $i++;
             }
-        }        
+        }
 
         // define basics
         $select = "SELECT DISTINCT p.pub_id, p.title, p.type, p.bibtex, p.author, p.editor, p.date, DATE_FORMAT(p.date, '%Y') AS year, p.urldate, p.isbn, p.url, p.booktitle, p.issuetitle, p.journal, p.volume, p.number, p.pages, p.publisher, p.address, p.edition, p.chapter, p.institution, p.organization, p.school, p.series, p.crossref, p.abstract, p.howpublished, p.key, p.techtype, p.note, p.is_isbn, p.image_url, p.image_target, p.image_ext, p.doi, p.rel_page, p.status, p.added, p.modified, p.import_id $selects FROM " . TEACHPRESS_PUB . " p $joins ";
@@ -157,7 +146,6 @@ class TP_Publications {
             if ( $element != '' && strpos($element, 'year') === false ) {
                 $order = $order . 'p.' . $element . ', ';
             }
-
         }
         if ( $order != '' ) {
             $order = substr($order, 0, -2);
@@ -183,18 +171,31 @@ class TP_Publications {
         $nwhere[] = TP_DB_Helpers::generate_where_clause($atts['author'], "p.author", "OR", "LIKE", '%');
         $nwhere[] = ( $atts['author_id'] != '' && $atts['include_editor_as_author'] === false) ? " AND ( r.is_author = 1 ) " : null;
         $nwhere[] = ( $search != '') ? $search : null;
+
+        $nhaving = array(); //@shahab: new having variable as array instead of string to make room for other havings (e.g. metadata which is resolved by TP's official where clause)
+        if ( !empty( $meta_fields ) && !empty( $atts['meta_key_search'] ) ) {
+            $meta_key_search = $atts['meta_key_search'];
+            $i = 1;
+            // Go throw each meta field and if there is a search value for it in meta_key_search[], add it to the WHERE clause
+            foreach ($meta_fields as $field) {
+                $key = $field['variable'];
+                $column_id = 'm' . $i . '.meta_value'; 
+                if (array_key_exists($key, $meta_key_search) ) {
+                    $nwhere[] = TP_DB_Helpers::generate_where_clause($meta_key_search[$key], $column_id, "OR", "=");
+                    //$nhaving[] = TP_DB_Helpers::generate_where_clause($meta_key_search[$key], $key, "OR", "="); //@shahab: make HAVING clause for metadata
+                }
+                $i++;
+            }
+        }
         $where = TP_DB_Helpers::compose_clause($nwhere);
         
         // HAVING clause
-        $having = '';
         if ( $atts['year'] != '' && $atts['year'] !== '0' ) {
-            $having = ' HAVING ' . TP_DB_Helpers::generate_where_clause($atts['year'], "year", "OR", "=");
+            $nhaving[] = TP_DB_Helpers::generate_where_clause($atts['year'], "year", "OR", "=");
         }
-
-        //@Shahab: add meta_having conditions to the main having if any
-        if ($meta_having != '') {
-            $having .= ($having == '') ? ' HAVING ' . $meta_having : ' AND ' . $meta_having;
-        }
+        
+        //@Shahab: compose HAVING of all clauses
+        $having = TP_DB_Helpers::compose_clause($nhaving, 'AND', "HAVING");
 
         // LIMIT clause
         $limit = ( $atts['limit'] != '' ) ? 'LIMIT ' . esc_sql($atts['limit']) : '';

@@ -1354,6 +1354,7 @@ function tp_publist_shortcode ($atts) {
         'tag'           => ( $filter_parameter['tag'] !== '' ) ? $filter_parameter['tag'] : htmlspecialchars($atts['tag']),
         'meta_key'      => htmlspecialchars($atts['meta_key']), // @Shahab: Added meta_key as sql parameter
         'meta_value'    => htmlspecialchars($atts['meta_value']), //@Shahab: added meta_value as sql param
+        'meta_key_search'=>array_combine(explode(',', htmlspecialchars($atts['meta_key'])), explode(',', htmlspecialchars($atts['meta_value']))), // Shahab: new meta key search
         'exclude'       => htmlspecialchars($atts['exclude']),
         'exclude_tags'  => htmlspecialchars($atts['exclude_tags']),
         'exclude_types' => htmlspecialchars($atts['exclude_types']),
@@ -1501,6 +1502,7 @@ function tp_publist_shortcode ($atts) {
         'type'                      => $sql_parameter['type'],
         'meta_key'                  => $sql_parameter['meta_key'], //@Shahab: added meta_key to args for query pubs
         'meta_value'                => $sql_parameter['meta_value'], //@Shahab: added meta_value to args for query pubs
+        'meta_key_search'           => $sql_parameter['meta_key_search'], // @Shahab: new query arg for meta key search
         'user'                      => $sql_parameter['user'], 
         'search'                    => $filter_parameter['search'],
         'author_id'                 => $sql_parameter['author'],

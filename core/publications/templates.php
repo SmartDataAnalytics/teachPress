@@ -396,7 +396,7 @@ class TP_HTML_Publication_Template {
         $container_id = ( $settings['container_suffix'] != '' ) ? $row['pub_id'] . '_' . $settings['container_suffix'] : $row['pub_id'];
         $separator = $template_settings['button_separator'];
         $menu_label_tags = $settings['show_pub_tag_link_as'] ?? $template_settings['menu_label_tags']; //@shahab: added menu_label_tags to overwrite it with a custom tag link
-        if (!strrpos($menu_label_tags, ':')) { $menu_label_tags .= ': '; }
+        if (!strrpos($menu_label_tags, ':')) { $menu_label_tags .= ': '; } // @shahab
         $name = self::prepare_publication_title($row, $settings, $container_id);
         $images = self::handle_images($row, $settings, $template);
         $abstract = '';
