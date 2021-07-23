@@ -57,6 +57,7 @@ class TP_Publications {
      *  include (STRING)                The ids of the publications you want to include (separated by comma)
      *  include_editor_as_author (BOOL) True or false
      *  exclude_tags (STRING)           Use it to exclude publications via tag IDs (separated by comma)
+     *  exclude_types (STRING)          Use it to exclude publications of specific types (separated by comma) activated by @SHAHAB
      *  order (STRING)                  The order of the list
      *  limit (STRING)                  The sql search limit, ie: 0,30
      *  search (STRING)                 The search string
@@ -85,7 +86,7 @@ class TP_Publications {
             'order'                     => 'date DESC',
             'limit'                     => '',
             'search'                    => '',
-            'meta_key_search'           => array(), //@SHAHAB: new meta_key_search as array of (meta_key => meta_value) pair that's initialized in shortcode builder sql_parameter & args for getting list of pubs
+            'meta_key_search'           => array(),
             'output_type'               => OBJECT
         );
         $atts = wp_parse_args( $args, $defaults );
