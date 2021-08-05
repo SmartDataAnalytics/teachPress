@@ -47,7 +47,7 @@ class TP_Publications {
      * Possible values for the array $args:
      *  user (STRING)                   User IDs (separated by comma)
      *  type (STRING)                   Type name (separated by comma)
-     *  tag (STRING)                    Tag IDs (separated by comma)
+     *  tag (STRING)                    Tag IDs (separated by comma) //@Shahab: or even with Tag names: (to build dynamic publication lists where tag comes from the post/page title)
      *  author_id (STRING)              Author IDs (separated by comma)
      *  import_id (STRING)              Import IDs (separated by comma)
      *  year (STRING)                   Years (separated by comma)
@@ -73,6 +73,7 @@ class TP_Publications {
             'user'                      => '',
             'type'                      => '',
             'tag'                       => '',
+            'tag_name'                  => '', //@shahab added tag_name
             'author_id'                 => '', 
             'import_id'                 => '',
             'year'                      => '',
@@ -110,6 +111,17 @@ class TP_Publications {
         $select = "SELECT DISTINCT p.pub_id, p.title, p.type, p.bibtex, p.author, p.editor, p.date, DATE_FORMAT(p.date, '%Y') AS year, p.urldate, p.isbn, p.url, p.booktitle, p.issuetitle, p.journal, p.volume, p.number, p.pages, p.publisher, p.address, p.edition, p.chapter, p.institution, p.organization, p.school, p.series, p.crossref, p.abstract, p.howpublished, p.key, p.techtype, p.note, p.is_isbn, p.image_url, p.image_target, p.image_ext, p.doi, p.rel_page, p.status, p.added, p.modified, p.import_id $selects FROM " . TEACHPRESS_PUB . " p $joins ";
         $join = '';
 
+        // @shahab: get tag IDs from tag names
+        if ( $atts['tag_name'] != '' ) {
+            $tag_id_from_name = '';
+            $tag_names = TP_DB_Helpers::generate_where_clause($atts['tag_name'], "name", "OR", "=");
+            $tag_ids = $wpdb->get_col("SELECT tag_id FROM " . TEACHPRESS_TAGS . " WHERE " . $tag_names);
+            foreach ($tag_ids as $id) {
+                $tag_id_from_name .= $id . ',';
+            }
+            $atts['tag'] = $tag_id_from_name . $atts['tag'];
+        }
+        
         // exclude publications via tag_id
         if ( $atts['exclude_tags'] != '' ) {
             $extend = '';

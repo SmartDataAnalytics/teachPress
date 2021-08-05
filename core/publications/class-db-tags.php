@@ -306,7 +306,7 @@ class TP_Tags {
                   GROUP BY r.tag_id ORDER BY tagPeak DESC 
                   $limit ) AS temp 
                 WHERE tagPeak>=".$cloud_info->min." 
-                ORDER BY tagPeak DESC"; //Shahab: chanded ORDER BY name ->> ORDER BY tagPeak DESC : to sort by frequency of tags
+                ORDER BY tagPeak DESC"; //Shahab: changed ORDER BY name ->> ORDER BY tagPeak DESC : to sort by frequency of tags
         
         $result["tags"] = $wpdb->get_results($sql, $atts['output_type']);
         $result["info"] = $cloud_info;

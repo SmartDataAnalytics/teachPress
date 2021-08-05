@@ -1179,7 +1179,8 @@ function tp_links_shortcode ($atts) {
  * 
  * @param array $atts {
  *      @type string $user                  the WordPress IDs of on or more users (separated by comma)
- *      @type string $tag                   tag IDs (separated by comma)
+ *      @type string $tag                   tag IDs (separated by comma) 
+ *      @type string $tag_name              Tag names (separated by comma) //added by @Shahab
  *      @type string $type                  the publication types you want to show (separated by comma)
  *      @type string $author                author IDs (separated by comma)
  *      @type string $year                  one or more years (separated by comma)
@@ -1230,7 +1231,8 @@ function tp_links_shortcode ($atts) {
 function tp_publist_shortcode ($atts) {
     $atts = shortcode_atts(array(
         'user'                  => '',
-        'tag'                   => '',
+        'tag'                   => '', 
+        'tag_name'              => '', //@Shahab: Tag names: (to build dynamic publication lists where tag name comes from the post/page title)
         'type'                  => '',
         'author'                => '',
         'year'                  => '',
@@ -1352,6 +1354,7 @@ function tp_publist_shortcode ($atts) {
         'author'        => ( $filter_parameter['author'] !== '' ) ? $filter_parameter['author'] : htmlspecialchars($atts['author']),
         'year'          => ( $filter_parameter['year'] !== '' ) ? $filter_parameter['year'] : htmlspecialchars($atts['year']),
         'tag'           => ( $filter_parameter['tag'] !== '' ) ? $filter_parameter['tag'] : htmlspecialchars($atts['tag']),
+        'tag_name'      => htmlspecialchars($atts['tag_name']), //@shahab added tag_name
         'meta_key_search'=>array_combine(explode(',', htmlspecialchars($atts['meta_key'])), explode(',', htmlspecialchars($atts['meta_value']))), // Shahab: new meta key search
         'exclude'       => htmlspecialchars($atts['exclude']),
         'exclude_tags'  => htmlspecialchars($atts['exclude_tags']),
@@ -1495,7 +1498,8 @@ function tp_publist_shortcode ($atts) {
     
     // Parameters for returning publications
     $args = array(
-        'tag'                       => $sql_parameter['tag'], 
+        'tag'                       => $sql_parameter['tag'],
+        'tag_name'                  => $sql_parameter['tag_name'], //@shahab added tag_name
         'year'                      => $sql_parameter['year'], 
         'type'                      => $sql_parameter['type'],
         'meta_key_search'           => $sql_parameter['meta_key_search'], // @Shahab: new query arg for meta key search
@@ -1619,6 +1623,7 @@ function tp_cloud_shortcode($atts) {
     $atts = shortcode_atts(array(
         'user'                      => '',
         'tag'                       => '',
+        'tag_name'                  => '', //@Shahab: Tag names: (to build dynamic publication lists where tag name comes from the post/page title)
         'type'                      => '',
         'author'                    => '',
         'year'                      => '',
@@ -1685,6 +1690,7 @@ function tp_list_shortcode($atts){
     $atts = shortcode_atts(array(
        'user'                       => '',
        'tag'                        => '',
+       'tag_name'                   => '', //@Shahab: Tag names: (to build dynamic publication lists where tag name comes from the post/page title)
        'type'                       => '',
        'author'                     => '',
        'year'                       => '',
@@ -1746,6 +1752,7 @@ function tp_search_shortcode ($atts) {
     $atts = shortcode_atts(array(
        'user'                       => '',
        'tag'                        => '',
+       'tag_name'                   => '', //@Shahab: Tag names: (to build dynamic publication lists where tag name comes from the post/page title)
        'type'                       => '',
        'author'                     => '',
        'year'                       => '',
