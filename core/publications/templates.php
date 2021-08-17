@@ -544,6 +544,7 @@ class TP_HTML_Publication_Template {
         $journal = isset( $row['journal'] ) ? TP_HTML_Publication_Template::prepare_field('journal', $row['journal'],'',', ',$use_span) : '';
         $volume = isset( $row['volume'] ) ? TP_HTML_Publication_Template::prepare_field('volume', $row['volume'],'',' ',$use_span) : '';        
         $publisher = isset( $row['publisher'] ) ? TP_HTML_Publication_Template::prepare_field('publisher', $row['publisher'],'',', ',$use_span) : '';
+        $publishedin = isset( $row['publishedin'] ) ? TP_HTML_Publication_Template::prepare_field('publishedin', $row['publishedin'],'',', ',$use_span) : ''; // shahab added publishedin
         $address = isset( $row['address'] ) ? TP_HTML_Publication_Template::prepare_field('address', $row['address'],'',', ',$use_span) : '';
         $edition = isset( $row['edition'] ) ? TP_HTML_Publication_Template::prepare_field('edition', $row['edition'],'',', ',$use_span) : '';
         $chapter = isset( $row['chapter'] ) ? TP_HTML_Publication_Template::prepare_field('chapter', $row['chapter'],' ' . __('Chapter','teachpress') . ' ',', ',$use_span) : '';
@@ -588,6 +589,7 @@ class TP_HTML_Publication_Template {
             '{organization}'    => $organization,
             '{pages}'           => $pages, 
             '{publisher}'       => $publisher,
+            '{publishedin}'     => $publishedin, // shahab added publishedin
             '{school}'          => $school,
             '{series}'          => $series,
             '{techtype}'        => $techtype,

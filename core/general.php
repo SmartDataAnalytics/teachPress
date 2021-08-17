@@ -225,6 +225,7 @@ function get_tp_var_types($type) {
             'number'            => '',
             'pages'             => '',
             'publisher'         => '',
+            'publishedin'       => '', // shahab added publishedin
             'address'           => '',
             'edition'           => '',
             'chapter'           => '',
