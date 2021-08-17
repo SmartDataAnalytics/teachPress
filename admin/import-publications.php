@@ -135,7 +135,9 @@ class TP_Import_Publication_Page {
             $settings = array(
                 'keyword_separator' => htmlspecialchars($post['keyword_option']),
                 'author_format' => htmlspecialchars($post['author_format']),
-                'overwrite' => isset( $post['overwrite']) ? true : false
+                'overwrite' => isset( $post['overwrite']) ? true : false,
+                //shahab: new setting 
+                //'ignore_existing' => true 
             );
 
             // echo $bibtex;
