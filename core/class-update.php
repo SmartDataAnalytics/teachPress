@@ -107,6 +107,7 @@ class TP_Update {
         if ( $db_version[0] === '7' || $update_level === '7' ) {
             TP_Update::upgrade_to_70();
             TP_Update::upgrade_to_71();
+            TP_Update::upgrade_to_72(); //@shahab to add publishedin to publications table
         }
         
         // Add teachPress options
@@ -810,6 +811,20 @@ class TP_Update {
         // add column image_ext to table teachpress_pub
         if ($wpdb->query("SHOW COLUMNS FROM " . TEACHPRESS_PUB . " LIKE 'image_ext'") == '0') { 
             $wpdb->query("ALTER TABLE " . TEACHPRESS_PUB . " ADD `image_ext` VARCHAR (400) NULL DEFAULT NULL AFTER `image_target`");
+        }
+    }
+
+    /**
+     * Database upgrade to teachPress 7.2.0 structure
+     * @since 7.2.0
+     * Shahab: for publishedin
+     */
+    private static function upgrade_to_72() {
+        global $wpdb;
+        
+        // add column publishedin to table teachpress_pub
+        if ($wpdb->query("SHOW COLUMNS FROM " . TEACHPRESS_PUB . " LIKE 'publishedin'") == '0') { 
+            $wpdb->query("ALTER TABLE " . TEACHPRESS_PUB . " ADD `publishedin` VARCHAR (500) NULL DEFAULT NULL AFTER `publisher`");
         }
     }
     
