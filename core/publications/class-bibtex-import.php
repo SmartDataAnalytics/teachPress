@@ -45,16 +45,16 @@ class TP_Bibtex_Import {
         for ( $i = 0; $i < $max; $i++ ) {
 
             // @Shahab: skip publication if already exist
-            if (isset($settings['ignore_existing']) && $settings['ignore_existing'] === true) {
+            /* if (isset($settings['ignore_existing']) && $settings['ignore_existing'] === true) {
                 $search_pub = TP_Publications::get_publication_by_key($entries[$i]['bibtexCitation'], ARRAY_A);
                 if ( $search_pub != NULL ) {
                     unset($entries[$i]);
                     continue;
                 }
-            }
+            } */
             
             // @SHAHAB: skip informal publications with archivePrefix = {arXiv} as characteristics
-            if (array_key_exists('archiveprefix', $entries[$i]) === true && ( $entries[$i]['archiveprefix'] == 'arXiv' || $entries[$i]['archiveprefix'] == 'arxiv')) {
+            if (array_key_exists('eprinttype', $entries[$i]) === true && ( $entries[$i]['eprinttype'] == 'arXiv' || $entries[$i]['eprinttype'] == 'arxiv')) {
                 unset($entries[$i]);
                 continue;
             }
