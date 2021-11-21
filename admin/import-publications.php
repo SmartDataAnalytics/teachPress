@@ -365,7 +365,7 @@ class TP_Import_Publication_Page {
 
         // Load data
         $wp_id = get_current_user_id();
-        $list = tp_publication_imports::get_imports($wp_id);
+        $list = tp_publication_imports::get_imports(); // shahab removed wp_id as argument for get_imports to allow list include every import and not just for the current user who browses the list
         $users = get_users();
         $publications_count = tp_publication_imports::count_publications();
 
