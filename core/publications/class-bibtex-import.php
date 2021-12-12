@@ -43,17 +43,8 @@ class TP_Bibtex_Import {
         // print_r($undefinedStrings);
         // print_r($entries);
         for ( $i = 0; $i < $max; $i++ ) {
-
-            // @Shahab: skip publication if already exist
-            /* if (isset($settings['ignore_existing']) && $settings['ignore_existing'] === true) {
-                $search_pub = TP_Publications::get_publication_by_key($entries[$i]['bibtexCitation'], ARRAY_A);
-                if ( $search_pub != NULL ) {
-                    unset($entries[$i]);
-                    continue;
-                }
-            } */
             
-            // @SHAHAB: skip informal publications with archivePrefix = {arXiv} as characteristics
+            // SHAHAB: skip informal publications with eprinttype = {arXiv} as characteristics
             if (array_key_exists('eprinttype', $entries[$i]) === true && ( $entries[$i]['eprinttype'] == 'arXiv' || $entries[$i]['eprinttype'] == 'arxiv')) {
                 unset($entries[$i]);
                 continue;
@@ -150,9 +141,6 @@ class TP_Bibtex_Import {
                     $entries[$i]['url'] = str_replace('https://doi.org/' . $entries[$i]['doi'], '', $entries[$i]['url']);
                 }
             }
-
-            //@shahab: retrieve Publishedin from RDF N-Triples
-            $entries[$i]['publishedin'] = array_key_exists('publishedin', $entries[$i]) === true ? $entries[$i]['publishedin'] : self::get_publishedin($entries[$i]);
             
             // Add the string to database
             if ( $test === false ) {
@@ -160,13 +148,13 @@ class TP_Bibtex_Import {
             }
             
             //Shahab: in test mode: to see the results after processing without being written to db
-            if ($test == true) {
+            /* if ($test == true) {
 				echo $i+1 . ": ";
 				foreach ($entries[$i] as $key => $value) {
 					echo $key . ": " . $value . "<br>";
 				}
 				echo "<br><br>";
-			}
+			} */
         }
         return $entries;
 
@@ -271,27 +259,6 @@ class TP_Bibtex_Import {
             return $macro_list[$entry];
         }
         return $entry;
-    }
-
-    /**
-     * Return PublishedIn from rdf version of an bibtex entry
-     * @param string $entry
-     * @return string
-     * @since 7.2
-     * Shahab
-     */
-    private static function get_publishedin ($entry) {
-        $rdf_url = '';
-        if (array_key_exists('biburl', $entry) === true && isset($entry['biburl'])) {
-            $rdf_url = $entry['biburl'];
-        } else {
-            return '';
-        } 
-        
-        $rdf_ntriples = file_get_contents($rdf_url);
-        
-        $publishedin = '';
-        return $publishedin;
     }
 }
 

@@ -327,7 +327,6 @@ function tp_activation ( $network_wide ) {
         foreach ($blogids as $blog_id) {
             switch_to_blog($blog_id);
             tp_install();
-            //tp_db_update(); //shahab
         }
         switch_to_blog($old_blog);
         return;
@@ -335,7 +334,6 @@ function tp_activation ( $network_wide ) {
     // it's a normal activation
     else {
         tp_install();
-        //tp_db_update(); //shahab
     }
 }
 

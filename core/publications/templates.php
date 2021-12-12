@@ -396,7 +396,7 @@ class TP_HTML_Publication_Template {
         $container_id = ( $settings['container_suffix'] != '' ) ? $row['pub_id'] . '_' . $settings['container_suffix'] : $row['pub_id'];
         $separator = $template_settings['button_separator'];
         $menu_label_tags = $settings['show_pub_tag_link_as'] ?? $template_settings['menu_label_tags']; //@shahab: added menu_label_tags to overwrite it with a custom tag link
-        if (!strrpos($menu_label_tags, ':')) { $menu_label_tags .= ': '; } // @shahab
+        if (!strrpos($menu_label_tags, ':')) { $menu_label_tags .= ': '; }
         $name = self::prepare_publication_title($row, $settings, $container_id);
         $images = self::handle_images($row, $settings, $template);
         $abstract = '';
@@ -544,7 +544,6 @@ class TP_HTML_Publication_Template {
         $journal = isset( $row['journal'] ) ? TP_HTML_Publication_Template::prepare_field('journal', $row['journal'],'',', ',$use_span) : '';
         $volume = isset( $row['volume'] ) ? TP_HTML_Publication_Template::prepare_field('volume', $row['volume'],'',' ',$use_span) : '';        
         $publisher = isset( $row['publisher'] ) ? TP_HTML_Publication_Template::prepare_field('publisher', $row['publisher'],'',', ',$use_span) : '';
-        $publishedin = isset( $row['publishedin'] ) ? TP_HTML_Publication_Template::prepare_field('publishedin', $row['publishedin'],'',', ',$use_span) : ''; // shahab added publishedin
         $address = isset( $row['address'] ) ? TP_HTML_Publication_Template::prepare_field('address', $row['address'],'',', ',$use_span) : '';
         $edition = isset( $row['edition'] ) ? TP_HTML_Publication_Template::prepare_field('edition', $row['edition'],'',', ',$use_span) : '';
         $chapter = isset( $row['chapter'] ) ? TP_HTML_Publication_Template::prepare_field('chapter', $row['chapter'],' ' . __('Chapter','teachpress') . ' ',', ',$use_span) : '';
@@ -589,7 +588,6 @@ class TP_HTML_Publication_Template {
             '{organization}'    => $organization,
             '{pages}'           => $pages, 
             '{publisher}'       => $publisher,
-            '{publishedin}'     => $publishedin, // shahab added publishedin
             '{school}'          => $school,
             '{series}'          => $series,
             '{techtype}'        => $techtype,

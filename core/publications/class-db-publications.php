@@ -107,8 +107,8 @@ class TP_Publications {
             }
         }
 
-        // define basics //@shahab: added publishedin as part of query
-        $select = "SELECT DISTINCT p.pub_id, p.title, p.type, p.bibtex, p.author, p.editor, p.date, DATE_FORMAT(p.date, '%Y') AS year, p.urldate, p.isbn, p.url, p.booktitle, p.issuetitle, p.journal, p.volume, p.number, p.pages, p.publisher, p.publishedin, p.address, p.edition, p.chapter, p.institution, p.organization, p.school, p.series, p.crossref, p.abstract, p.howpublished, p.key, p.techtype, p.note, p.is_isbn, p.image_url, p.image_target, p.image_ext, p.doi, p.rel_page, p.status, p.added, p.modified, p.import_id $selects FROM " . TEACHPRESS_PUB . " p $joins ";
+        // define basics
+        $select = "SELECT DISTINCT p.pub_id, p.title, p.type, p.bibtex, p.author, p.editor, p.date, DATE_FORMAT(p.date, '%Y') AS year, p.urldate, p.isbn, p.url, p.booktitle, p.issuetitle, p.journal, p.volume, p.number, p.pages, p.publisher, p.address, p.edition, p.chapter, p.institution, p.organization, p.school, p.series, p.crossref, p.abstract, p.howpublished, p.key, p.techtype, p.note, p.is_isbn, p.image_url, p.image_target, p.image_ext, p.doi, p.rel_page, p.status, p.added, p.modified, p.import_id $selects FROM " . TEACHPRESS_PUB . " p $joins ";
         $join = '';
 
         // @shahab: get tag IDs from tag names
@@ -289,7 +289,7 @@ class TP_Publications {
         global $wpdb;
         $output_type = esc_sql($atts['output_type']);
         $include = TP_DB_Helpers::generate_where_clause($atts['include'], "type", "OR", "=");
-        $exclude = TP_DB_Helpers::generate_where_clause($atts['exclude'], "type", "AND", "!="); // Shahab: changed OR to AND (for multiple types to be excluded)
+        $exclude = TP_DB_Helpers::generate_where_clause($atts['exclude'], "type", "OR", "!=");
         $user = TP_DB_Helpers::generate_where_clause($atts['user'], "u.user", "OR", "=");
         
         $having = ( $include != '' || $exclude != '' ) ? " HAVING $include $exclude " : "";
@@ -396,8 +396,7 @@ class TP_Publications {
                 'volume'        => $data['volume'], 
                 'number'        => $data['number'], 
                 'pages'         => $data['pages'], 
-                'publisher'     => stripslashes($data['publisher']),
-                'publishedin'   => stripslashes($data['publishedin']), //@shahab: added publishedin to be added to the corresponding field in table 
+                'publisher'     => stripslashes($data['publisher']), 
                 'address'       => stripslashes($data['address']), 
                 'edition'       => $data['edition'], 
                 'chapter'       => $data['chapter'], 
@@ -422,7 +421,7 @@ class TP_Publications {
                 'added'         => $post_time, 
                 'modified'      => $post_time, 
                 'import_id'     => $data['import_id'] ), 
-            array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d' ) );
+            array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d' ) );
         $pub_id = $wpdb->insert_id;
 
         // Bookmarks
@@ -509,8 +508,7 @@ class TP_Publications {
                     'volume'        => $data['volume'], 
                     'number'        => $data['number'], 
                     'pages'         => $data['pages'], 
-                    'publisher'     => stripslashes($data['publisher']),
-                    'publishedin'   => stripslashes($data['publishedin']), //@shahab: added publishedin to be added to the corresponding field in table 
+                    'publisher'     => stripslashes($data['publisher']), 
                     'address'       => stripslashes($data['address']), 
                     'edition'       => $data['edition'], 
                     'chapter'       => $data['chapter'], 
@@ -534,7 +532,7 @@ class TP_Publications {
                     'status'        => stripslashes($data['status']), 
                     'modified'      => $post_time ), 
                 array( 'pub_id' => $pub_id ), 
-                array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s' ), 
+                array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s' ), 
                 array( '%d' ) );
         
         // get_tp_message($wpdb->last_query);
@@ -583,7 +581,7 @@ class TP_Publications {
         $search_pub = self::get_publication_by_key($key, ARRAY_A);
         if ( $search_pub === NULL ) {
             return false;
-        } //--- Shahab Added else---// 
+        } //--- Shahab Added ---// 
         else {
             // publication already exists, no need to update. break from here!
             return $search_pub['pub_id']; 
@@ -763,7 +761,6 @@ class TP_Publications {
             'number'            => '',
             'pages'             => '',
             'publisher'         => '',
-            'publishedin'       => '',
             'address'           => '',
             'edition'           => '',
             'chapter'           => '',

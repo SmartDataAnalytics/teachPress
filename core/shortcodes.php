@@ -1468,7 +1468,7 @@ function tp_publist_shortcode ($atts) {
     }
     
     // show all button
-    if ( $showall !== '' && $cloud_settings['show_tags_as'] != 'none') { //shahab: changed to: if ( $showall !== '' && $cloud_settings['show_tags_as'] != 'none')
+    if ( $showall !== '' && $cloud_settings['show_tags_as'] != 'none') {
         $part1 .= '<p style="text-align:center">' . $showall . '</p>';
     }
     

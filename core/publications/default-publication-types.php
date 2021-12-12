@@ -12,7 +12,7 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Journal Article','teachpress'),
             'i18n_plural'       => __('Journal Articles','teachpress'),
             'default_fields'    => array('journal', 'volume', 'number', 'pages'),
-            'html_meta_row'     => '{journal}{volume}{number}{pages}{year}{isbn}{note}' // shahab: added stron tag for testing notes
+            'html_meta_row'     => '{IN}{journal}{volume}{number}{pages}{year}{isbn}{note}' 
         ) );
     
     // Book
@@ -23,7 +23,7 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Book','teachpress'),
             'i18n_plural'       => __('Books','teachpress'),
             'default_fields'    => array('volume', 'number', 'publisher', 'address', 'edition', 'series'),
-            'html_meta_row'     => '{series}{volume}{edition}{publisher}{address}{year}{isbn}{note}' // shahab : added series to the beginning
+            'html_meta_row'     => '{edition}{publisher}{address}{year}{isbn}{note}' 
         ) );
     
     // Booklet
@@ -105,8 +105,8 @@ function tp_register_all_publication_types() {
             'bibtex_key_ext'    => 'incollection',
             'i18n_singular'     => __('Incollection','teachpress'), 
             'i18n_plural'       => __('Incollections','teachpress'), 
-            'default_fields'    => array('volume', 'number', 'pages', 'publisher', 'publishedin','address', 'edition', 'chapter', 'series', 'techtype'),  
-            'html_meta_row'     => '{IN}{publishedin}{publisher}{volume}{number}{pages}{address}{year}{isbn}{note}' 
+            'default_fields'    => array('volume', 'number', 'pages', 'publisher', 'address', 'edition', 'chapter', 'series', 'techtype'),  
+            'html_meta_row'     => '{IN}{editor}{booktitle}{volume}{number}{pages}{publisher}{address}{year}{isbn}{note}' 
         ) );
     
     // Inproceedings
@@ -116,8 +116,8 @@ function tp_register_all_publication_types() {
             'bibtex_key_ext'    => 'inproceedings',
             'i18n_singular'     => _x('Inproceedings','Singular form of inproceedings, if it exists','teachpress'),
             'i18n_plural'       => __('Inproceedings','teachpress'),  
-            'default_fields'    => array('booktitle', 'volume', 'number', 'pages', 'publisher', 'publishedin', 'address', 'organization', 'series'),   
-            'html_meta_row'     => '{IN}{publishedin}{year}{pages}{organization}{publisher}{address}{isbn}{note}' 
+            'default_fields'    => array('booktitle', 'volume', 'number', 'pages', 'publisher', 'address', 'organization', 'series'),   
+            'html_meta_row'     => '{IN}{editor}{booktitle}{pages}{organization}{publisher}{address}{year}{isbn}{note}' 
         ) );
     
     // Manual
@@ -218,18 +218,7 @@ function tp_register_all_publication_types() {
             'bibtex_key_ext'    => 'presentation',
             'i18n_singular'     => __('Presentation','teachpress'),
             'i18n_plural'       => __('Presentations','teachpress'), 
-            'default_fields'    => array('howpublished', 'publishedin'), 
-            'html_meta_row'     => '{howpublished}{address}{date}{isbn}{note}' 
-        ) );
-
-    // Posters
-    tp_register_publication_type(
-        array(
-            'type_slug'         => 'posters',
-            'bibtex_key_ext'    => 'posters',
-            'i18n_singular'     => __('Poster','teachpress'),
-            'i18n_plural'       => __('Posters','teachpress'), 
-            'default_fields'    => array('howpublished', 'publishedin', 'publisher'), 
+            'default_fields'    => array('howpublished'), 
             'html_meta_row'     => '{howpublished}{address}{date}{isbn}{note}' 
         ) );
     
@@ -240,7 +229,7 @@ function tp_register_all_publication_types() {
             'bibtex_key_ext'    => 'proceedings',
             'i18n_singular'     => __('Proceeding','teachpress'),
             'i18n_plural'       => __('Proceedings','teachpress'), 
-            'default_fields'    => array('howpublished', 'publishedin', 'publisher'), 
+            'default_fields'    => array('howpublished'), 
             'html_meta_row'     => '{howpublished}{organization}{publisher}{address}{volume}{number}{year}{isbn}{note}' 
         ) );
     

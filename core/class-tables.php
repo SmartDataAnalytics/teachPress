@@ -482,7 +482,6 @@ class TP_Tables {
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     
-        //@Shahab: added publishedin as new field
         dbDelta("CREATE TABLE " . TEACHPRESS_PUB . " (
                     `pub_id` INT UNSIGNED AUTO_INCREMENT,
                     `title` VARCHAR(500),
@@ -501,7 +500,6 @@ class TP_Tables {
                     `number` VARCHAR(40),
                     `pages` VARCHAR(40),
                     `publisher` VARCHAR (500),
-                    `publishedin` VARCHAR (500),
                     `address` VARCHAR (300),
                     `edition` VARCHAR (100),
                     `chapter` VARCHAR (40),
