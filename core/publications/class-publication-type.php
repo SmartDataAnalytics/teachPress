@@ -26,7 +26,8 @@ class TP_Publication_Type {
             'i18n_singular' => '',
             'i18n_plural' => '',
             'default_fields' => '',
-            'html_meta_row' => ''
+            'html_meta_row' => '',
+            'rdf_type' => '',
         ), $atts);
         
         if ( $param['type_slug'] !== '' ) {
@@ -36,7 +37,8 @@ class TP_Publication_Type {
                 'i18n_singular' => $param['i18n_singular'],
                 'i18n_plural' => $param['i18n_plural'],
                 'default_fields' => $param['default_fields'],
-                'html_meta_row' => $param['html_meta_row']
+                'html_meta_row' => $param['html_meta_row'],
+                'rdf_type'  => $param['rdf_type'],
             );
         }
     }

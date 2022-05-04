@@ -12,7 +12,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Journal Article','teachpress'),
             'i18n_plural'       => __('Journal Articles','teachpress'),
             'default_fields'    => array('journal', 'volume', 'number', 'pages'),
-            'html_meta_row'     => '{IN}{journal}{volume}{number}{pages}{year}{isbn}{note}' 
+            'html_meta_row'     => '{IN}{journal}{volume}{number}{pages}{year}{isbn}{note}',
+            'rdf_type'          => array('Article'),
         ) );
     
     // Book
@@ -23,7 +24,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Book','teachpress'),
             'i18n_plural'       => __('Books','teachpress'),
             'default_fields'    => array('volume', 'number', 'publisher', 'address', 'edition', 'series'),
-            'html_meta_row'     => '{edition}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{edition}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Book'),
         ) );
     
     // Booklet
@@ -34,7 +36,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Booklet','teachpress'),
             'i18n_plural'       => __('Booklets','teachpress'),
             'default_fields'    => array('volume', 'address', 'howpublished'),
-            'html_meta_row'     => '{howpublished}{address}{edition}{year}{isbn}{note}' 
+            'html_meta_row'     => '{howpublished}{address}{edition}{year}{isbn}{note}',
+            'rdf_type'          => array('Booklet'),
         ) );
     
     // Collection
@@ -45,7 +48,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Collection','teachpress'),
             'i18n_plural'       => __('Collections','teachpress'),
             'default_fields'    => array('booktitle', 'volume', 'number', 'pages', 'publisher', 'address', 'edition', 'chapter', 'series'), 
-            'html_meta_row'     => '{edition}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{edition}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Collection'),
         ) );
     
     // Conference
@@ -56,7 +60,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Conference','teachpress'),
             'i18n_plural'       => __('Conferences','teachpress'), 
             'default_fields'    => array('booktitle', 'volume', 'number', 'pages', 'publisher', 'address', 'organization', 'series'), 
-            'html_meta_row'     => '{booktitle}{volume}{number}{series}{organization}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{booktitle}{volume}{number}{series}{organization}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Conference'),
         ) );
     
     /**
@@ -70,7 +75,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Bachelor Thesis','teachpress'), 
             'i18n_plural'       => __('Bachelor Theses','teachpress'),   
             'default_fields'    => array('address', 'school', 'techtype'),   
-            'html_meta_row'     => '{school}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{school}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Bachelor Thesis'),
         ) );
     
     /**
@@ -84,7 +90,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Diploma Thesis','teachpress'), 
             'i18n_plural'       => __('Diploma Theses','teachpress'),   
             'default_fields'    => array('address', 'school', 'techtype'),   
-            'html_meta_row'     => '{school}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{school}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Diploma Thesis'),
         ) );
     
     // Inbook
@@ -95,7 +102,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Book Chapter','teachpress'), 
             'i18n_plural'       => __('Book Chapters','teachpress'), 
             'default_fields'    => array('volume', 'number', 'pages', 'publisher', 'address', 'edition', 'chapter', 'series'), 
-            'html_meta_row'     => '{IN}{editor}{booktitle}{volume}{number}{chapter}{pages}{publisher}{address}{edition}{year}{isbn}{note}' 
+            'html_meta_row'     => '{IN}{editor}{booktitle}{volume}{number}{chapter}{pages}{publisher}{address}{edition}{year}{isbn}{note}',
+            'rdf_type'          => array('Book Chapters'),
         ) );
     
     // Incollection
@@ -106,7 +114,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Incollection','teachpress'), 
             'i18n_plural'       => __('Incollections','teachpress'), 
             'default_fields'    => array('volume', 'number', 'pages', 'publisher', 'address', 'edition', 'chapter', 'series', 'techtype'),  
-            'html_meta_row'     => '{IN}{editor}{booktitle}{volume}{number}{pages}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{IN}{editor}{booktitle}{volume}{number}{pages}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Incollection', 'Reference'),
         ) );
     
     // Inproceedings
@@ -117,7 +126,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => _x('Inproceedings','Singular form of inproceedings, if it exists','teachpress'),
             'i18n_plural'       => __('Inproceedings','teachpress'),  
             'default_fields'    => array('booktitle', 'volume', 'number', 'pages', 'publisher', 'address', 'organization', 'series'),   
-            'html_meta_row'     => '{IN}{editor}{booktitle}{pages}{organization}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{IN}{editor}{booktitle}{pages}{organization}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Inproceedings'),
         ) );
     
     // Manual
@@ -128,7 +138,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Technical Manual','teachpress'),
             'i18n_plural'       => __('Technical Manuals','teachpress'),  
             'default_fields'    => array('address', 'edition', 'organization', 'series'),   
-            'html_meta_row'     => '{editor}{organization}{address}{edition}{year}{isbn}{note}' 
+            'html_meta_row'     => '{editor}{organization}{address}{edition}{year}{isbn}{note}',
+            'rdf_type'          => array(),
         ) );
     
     // Masters Thesis
@@ -139,7 +150,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Masters Thesis','teachpress'), 
             'i18n_plural'       => __('Masters Theses','teachpress'),   
             'default_fields'    => array('address', 'school', 'techtype'),   
-            'html_meta_row'     => '{school}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{school}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Master Thesis'),
         ) );
     
     /**
@@ -153,7 +165,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Medium','teachpress'),
             'i18n_plural'       => __('Media','teachpress'), 
             'default_fields'    => array('publisher', 'address', 'howpublished'), 
-            'html_meta_row'     => '{publisher}{address}{howpublished}{year}{urldate}{note}' 
+            'html_meta_row'     => '{publisher}{address}{howpublished}{year}{urldate}{note}',
+            'rdf_type'          => array('Media'),
         ) );
     
     // Misc
@@ -164,7 +177,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Miscellaneous','teachpress'),
             'i18n_plural'       => __('Miscellaneous','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{howpublished}{year}{isbn}{note}' 
+            'html_meta_row'     => '{howpublished}{year}{isbn}{note}',
+            'rdf_type'          => array('Miscellaneous'), 
         ) );
     
     // Online
@@ -175,7 +189,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Online','teachpress'),
             'i18n_plural'       => __('Online','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{editor}{organization}{year}{urldate}{note}' 
+            'html_meta_row'     => '{editor}{organization}{year}{urldate}{note}',
+            'rdf_type'          => array(),
         ) );
     
     // Patent
@@ -186,7 +201,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Patent','teachpress'),
             'i18n_plural'       => __('Patents','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{number}{year}{note}' 
+            'html_meta_row'     => '{number}{year}{note}',
+            'rdf_type'          => array(),
         ) );
     
     // Periodical
@@ -197,7 +213,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Periodical','teachpress'),
             'i18n_plural'       => __('Periodicals','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{issuetitle}{series}{volume}{number}{year}{urldate}{isbn}{note}' 
+            'html_meta_row'     => '{issuetitle}{series}{volume}{number}{year}{urldate}{isbn}{note}',
+            'rdf_type'          => array(),
         ) );
     
     // PhD Thesis
@@ -208,7 +225,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('PhD Thesis','teachpress'),
             'i18n_plural'       => __('PhD Theses','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{school}{year}{isbn}{note}' 
+            'html_meta_row'     => '{school}{year}{isbn}{note}',
+            'rdf_type'          => array('PHD Thesis'),
         ) );
     
     // Presentation
@@ -219,7 +237,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Presentation','teachpress'),
             'i18n_plural'       => __('Presentations','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{howpublished}{address}{date}{isbn}{note}' 
+            'html_meta_row'     => '{howpublished}{address}{date}{isbn}{note}',
+            'rdf_type'          => array('Presentation'), 
         ) );
     
     // Proceedings
@@ -230,7 +249,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Proceeding','teachpress'),
             'i18n_plural'       => __('Proceedings','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{howpublished}{organization}{publisher}{address}{volume}{number}{year}{isbn}{note}' 
+            'html_meta_row'     => '{howpublished}{organization}{publisher}{address}{volume}{number}{year}{isbn}{note}',
+            'rdf_type'          => array('Proceedings', 'Editorship'),
         ) );
     
     // Techreport
@@ -241,7 +261,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Technical Report','teachpress'),
             'i18n_plural'       => __('Technical Reports','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{institution}{address}{techtype}{number}{year}{isbn}{note}' 
+            'html_meta_row'     => '{institution}{address}{techtype}{number}{year}{isbn}{note}',
+            'rdf_type'          => array(), 
         ) );
     
     // Unpublished
@@ -252,7 +273,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Informal Publications','teachpress'), // Shahab: rename unpublished to informal publications
             'i18n_plural'       => __('Informal Publications','teachpress'),
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{howpublished}{year}{isbn}{note}' 
+            'html_meta_row'     => '{howpublished}{year}{isbn}{note}',
+            'rdf_type'          => array('Informal'),
         ) );
     
     // Workshop
@@ -263,7 +285,8 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('Workshop','teachpress'),
             'i18n_plural'       => __('Workshops','teachpress'),
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{booktitle}{volume}{number}{series}{organization}{publisher}{address}{year}{isbn}{note}' 
+            'html_meta_row'     => '{booktitle}{volume}{number}{series}{organization}{publisher}{address}{year}{isbn}{note}',
+            'rdf_type'          => array('Workshop'),
         ) );
 
 }
