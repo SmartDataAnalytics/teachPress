@@ -104,7 +104,10 @@ class my_template_2022 implements TP_Publication_Template {
         $s .= $interface->get_number('<div class="tp_pub_number">', '.</div>');
         $s .= $interface->get_images('left');
         $s .= '<div class="tp_pub_info">';
-        $s .= $interface->get_author('<p class="tp_pub_author">', '</p>');
+        //$s .= $interface->get_author('<p class="tp_pub_author">', '</p>');
+        $authors = $interface->get_author();
+        $authors = strrpos($authors, ',') !== false ? substr_replace($authors, ' and', strrpos($authors, ','), 1) : $authors;   // adds 'and' before last author, if 'comma' passed as author_separator via pub_list shortcodes
+        $s .= '<p class="tp_pub_author">'. $authors . '</p>';
         //$s .= '<p class="tp_pub_title">' . $interface->get_title() . ' ' . $interface->get_type() . ' ' . $interface->get_label('status', array('forthcoming') ) . $interface->get_label('journal', array($journal)) . '</p>';
         // journal instead of type as label
         $s .= '<p class="tp_pub_title">' . $interface->get_title() . ' ' . $interface->get_label('journal', array($journal)) . ' ' . $interface->get_label('status', array('forthcoming') ) . '</p>';
